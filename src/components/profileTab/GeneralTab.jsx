@@ -1,6 +1,6 @@
 function GeneralTab({ setValue }) {
   return (
-    <div className="flex flex-col gap-[2rem]">
+    <div className="flex flex-col gap-[1rem]">
       <div className="flex gap-[4.4rem] shadow-lg border-2 border-primary-teal text-primary-white px-[1.8rem] py-[1.2rem] rounded-[1.4rem] w-[60%] font-semibold">
         <div className="flex flex-col gap-[0.5rem]">
           <div className="flex gap-[1rem] text-primary-black">

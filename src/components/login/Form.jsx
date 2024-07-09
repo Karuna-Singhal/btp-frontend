@@ -2,7 +2,7 @@ import React from "react";
 import { UserIcon } from "@heroicons/react/24/solid";
 import illustrion from "assets/images/illustration.jpg";
 
-function Form({ email, password, setEmail, setPassword }) {
+function Form({ email, password, setEmail, setPassword, login }) {
   return (
     <div className="flex grow items-center px-[2rem] gap-[2rem]">
       <div className="flex flex-col gap-[1rem]">
@@ -34,6 +34,7 @@ function Form({ email, password, setEmail, setPassword }) {
           <button
             type="submit"
             className="bg-primary-black text-primary-white flex items-center justify-center gap-[0.5rem] px-[1rem] py-[0.8rem] rounded-[0.6rem]"
+            onClick={login}
           >
             <span>Login</span>
             <UserIcon width={20} />
