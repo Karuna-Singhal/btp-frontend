@@ -26,6 +26,7 @@ function Login() {
       if (data.status === "success") {
         localStorage.setItem("role", data.user.role);
         localStorage.setItem("token", data.token);
+        localStorage.setItem("name", data.user.name);
 
         if (data.user.role === "user") navigate("/my-profile");
         toast.success("Logged in successfully");

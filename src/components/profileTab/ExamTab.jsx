@@ -1,30 +1,96 @@
 import ExamCard from "components/examCard/ExamCard";
+import { useEffect, useState } from "react";
+import { PulseLoader } from "react-spinners";
+import restClient from "restClient";
 
 function ExamTab() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [examData, setExamData] = useState([]);
+  const [totalExams, setTotalExams] = useState(0);
+  const [attemptedExam, setAttemptedExam] = useState(0);
+  const [studentExams, setStudentExams] = useState([]);
+
+  const getAllExams = async () => {
+    try {
+      setIsLoading(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/exam",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success") {
+        setExamData(
+          data.exams.sort((a, b) => new Date(a.date) - new Date(b.date))
+        );
+        setTotalExams(data.results);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getStudentExams = async () => {
+    try {
+      setIsLoading(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/studentExam",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success") {
+        setStudentExams(data.studentExams);
+        setAttemptedExam(data.results);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllExams();
+    getStudentExams();
+  }, []);
+
   return (
     <div className="flex flex-col gap-[1rem]">
       <div className="flex gap-[3rem]">
         <div className="flex gap-[0.6rem] text-primary-black font-semibold">
-          Total Exams: <span>245</span>
+          Total Exams: <span>{totalExams}</span>
         </div>
         <div className="flex gap-[0.6rem] text-primary-black font-semibold">
-          Attempted: <span>245</span>
+          Attempted: <span>{attemptedExam}</span>
         </div>
         <div className="flex gap-[0.6rem] text-primary-gray font-semibold">
-          Unattempted: <span>245</span>
-        </div>
-        <div className="flex gap-[0.6rem] text-primary-green font-semibold">
-          Passed: <span>245</span>
-        </div>
-        <div className="flex gap-[0.6rem] text-primary-red font-semibold">
-          Failed: <span>245</span>
+          Unattempted: <span>{totalExams - attemptedExam}</span>
         </div>
       </div>
-      <div className="grid grid-cols-3  gap-4">
-        <ExamCard />
-        <ExamCard />
-        <ExamCard />
-        <ExamCard />
+      <div className="flex flex-col gap-4">
+        {isLoading && (
+          <div className="flex justify-center pt-6">
+            <PulseLoader color="#7048e8" size={16} />
+          </div>
+        )}
+        {!isLoading &&
+          examData.map((exam) => (
+            <ExamCard
+              exam={exam}
+              studentExam={studentExams.find(
+                (sExam) => sExam.examId === exam._id
+              )}
+            />
+          ))}
       </div>
     </div>
   );

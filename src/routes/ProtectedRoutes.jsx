@@ -10,8 +10,7 @@ const RedirectTo = () => {
 };
 
 function ProtectedRoutes() {
-  // const authToken = localStorage.getItem("token");
-  const authToken = true;
+  const authToken = localStorage.getItem("token");
 
   return authToken ? <Outlet /> : <RedirectTo />;
 }

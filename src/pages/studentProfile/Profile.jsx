@@ -7,8 +7,6 @@ import ExamTab from "components/profileTab/ExamTab";
 import AssignmentTab from "components/profileTab/AssignmentTab";
 import SubjectTab from "components/profileTab/SubjectTab";
 
-import profileimage from "assets/images/profile.jpg";
-
 function Profile() {
   const [value, setValue] = useState("general");
 
@@ -20,20 +18,9 @@ function Profile() {
         </span>
         <LabTabs value={value} onChange={(e, newValue) => setValue(newValue)} />
 
-        <div className="flex gap-[2rem] items-center">
-          <div className="flex items-center gap-[1rem]">
-            <span className="text-primary-teal font-semibold text-[1.2rem]">
-              Karuna Singhal
-            </span>
-            <div className="w-[2rem] h-[2rem]">
-              <img
-                src={profileimage}
-                alt="profile"
-                className="rounded-full w-full h-full"
-              />
-            </div>
-          </div>
-        </div>
+        <span className="text-primary-teal font-semibold text-[1.2rem]">
+          {localStorage.getItem("name")}
+        </span>
       </div>
 
       <div className="mt-[1rem]">
