@@ -5,21 +5,26 @@ import Box from "@mui/material/Box";
 
 export default function TabsWrappedLabel({ value, onChange }) {
   return (
-    <div className="border-y-2 border-primary-teal">
-      <Box sx={{ width: "100%" }}>
-        <Tabs
-          value={value}
-          onChange={onChange}
-          textColor="primary"
-          indicatorColor="info"
-        >
-          <Tab value="general" label="General" />
-          <Tab value="quiz" label="Quiz" />
-          <Tab value="exams" label="Exam" />
-          <Tab value="assignment" label="Assignment" />
-          <Tab value="subjects" label="Subject" />
-        </Tabs>
-      </Box>
-    </div>
+    <Box>
+      <Tabs
+        value={value}
+        onChange={onChange}
+        sx={{
+          "& .MuiTabs-indicator": {
+            backgroundColor: "#1dbbc3",
+          },
+          "& .Mui-selected": {
+            fontWeight: "bold",
+            color: "#1dbbc3 !important",
+          },
+        }}
+      >
+        <Tab value="general" label="General" />
+        <Tab value="quiz" label="Quiz" />
+        <Tab value="exams" label="Exam" />
+        <Tab value="assignment" label="Assignment" />
+        <Tab value="subjects" label="Subject" />
+      </Tabs>
+    </Box>
   );
 }

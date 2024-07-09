@@ -4,7 +4,7 @@ import illustrion from "assets/images/illustration.jpg";
 
 function Form({ email, password, setEmail, setPassword, login }) {
   return (
-    <div className="flex grow items-center px-[2rem] gap-[2rem]">
+    <div className="flex grow items-center px-[2rem] gap-[2rem] justify-between">
       <div className="flex flex-col gap-[1rem]">
         <span className="font-bold text-[4.4rem] tracking-tighter">
           Take Control of{" "}
