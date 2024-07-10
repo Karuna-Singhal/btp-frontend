@@ -35,7 +35,7 @@ function AssignmentCard({ assignment, studentAssignment }) {
           Marks Obtained:
         </span>
         <span className="text-primary-black">
-          {studentAssignment.marksObtained || 0}
+          {studentAssignment?.marksObtained || 0}
         </span>
       </div>
     </div>
