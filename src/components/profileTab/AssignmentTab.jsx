@@ -1,6 +1,6 @@
 import AssignmentCard from "components/assignmentCard/AssignmentCard";
 import { useEffect, useState } from "react";
-import { PulseLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function AssignmentTab() {
@@ -77,7 +77,7 @@ function AssignmentTab() {
       <div className="flex flex-col gap-4">
         {isLoading && (
           <div className="flex justify-center pt-6">
-            <PulseLoader color="#f76707" size={16} />
+            <ClipLoader color="#f76707" size={40} />
           </div>
         )}
         {!isLoading &&
@@ -85,7 +85,7 @@ function AssignmentTab() {
             <AssignmentCard
               assignment={assignment}
               studentAssignment={studentAssignments.find(
-                (sAssignment) => sAssignment.assignmentId === assignment._id
+                (sAssignment) => sAssignment.assignmentId === assignment._id,
               )}
             />
           ))}

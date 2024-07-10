@@ -1,6 +1,6 @@
 import SubjectCard from "components/subjectCard/SubjectCard";
 import { useEffect, useState } from "react";
-import { PulseLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function SubjectTab() {
@@ -72,7 +72,7 @@ function SubjectTab() {
       <div className="flex flex-col gap-4">
         {isLoading && (
           <div className="flex justify-center pt-6">
-            <PulseLoader color="#be4bdb" size={16} />
+            <ClipLoader color="#be4bdb" size={40} />
           </div>
         )}
         {!isLoading &&
@@ -80,7 +80,7 @@ function SubjectTab() {
             <SubjectCard
               subject={subject}
               studentSubject={studentSubjects.find(
-                (sSubject) => sSubject.subjectId === subject._id
+                (sSubject) => sSubject.subjectId === subject._id,
               )}
             />
           ))}
