@@ -16,8 +16,6 @@ function GeneralTab({ setValue }) {
   const [isLoadingExam, setIsLoadingExam] = useState(false);
   const [isLoadingAssignment, setIsLoadingAssignment] = useState(false);
 
-  console.log(examData);
-
   const getUserDetails = async () => {
     try {
       setIsLoading(true);
@@ -55,7 +53,7 @@ function GeneralTab({ setValue }) {
           ...prev,
           totalClasses: data.subjects.reduce(
             (accumulator, subject) => accumulator + subject.totalClasses,
-            0,
+            0
           ),
         }));
       }
@@ -81,7 +79,7 @@ function GeneralTab({ setValue }) {
           classesAttended: data.studentSubjects.reduce(
             (accumulator, subject) =>
               accumulator + subject.totalClassesAttended,
-            0,
+            0
           ),
         }));
       }
@@ -176,7 +174,7 @@ function GeneralTab({ setValue }) {
           ...prev,
           totalPassed: data.studentExams.reduce((accumulator, exam) => {
             const examDetails = examData.allExams.find(
-              (e) => e._id === exam.examId,
+              (e) => e._id === exam.examId
             );
 
             const isPassed =
