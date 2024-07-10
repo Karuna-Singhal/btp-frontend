@@ -1,6 +1,6 @@
 import QuizCard from "components/quizCard/QuizCard";
 import { useEffect, useState } from "react";
-import { PulseLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function QuizTab() {
@@ -24,7 +24,7 @@ function QuizTab() {
 
       if (data.status === "success") {
         setQuizData(
-          data.quizzes.sort((a, b) => new Date(a.date) - new Date(b.date))
+          data.quizzes.sort((a, b) => new Date(a.date) - new Date(b.date)),
         );
         setTotalQuizzes(data.results);
       }
@@ -79,7 +79,7 @@ function QuizTab() {
       <div className="grid grid-cols-3 gap-4">
         {isLoading && (
           <div className="flex justify-center col-span-full pt-6">
-            <PulseLoader color="#d6336c" size={16} />
+            <ClipLoader color="#d6336c" size={40} />
           </div>
         )}
         {!isLoading &&
@@ -87,7 +87,7 @@ function QuizTab() {
             <QuizCard
               quiz={quiz}
               studentQuiz={studentQuizzes.find(
-                (sQuiz) => sQuiz.quizId === quiz._id
+                (sQuiz) => sQuiz.quizId === quiz._id,
               )}
             />
           ))}
