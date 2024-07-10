@@ -50,8 +50,8 @@ function Form({ email, password, setEmail, setPassword, login, isLoading }) {
           </button>
         </div>
       </div>
-      <div>
-        <img src={illustrion} alt="img" className="h-[80%]" />
+      <div className="w-[50%]">
+        <img src={illustrion} alt="img" className="h-[80%] " />
       </div>
     </div>
   );
