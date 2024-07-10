@@ -2,7 +2,7 @@ import React from "react";
 import { ClipLoader } from "react-spinners";
 import { UserIcon } from "@heroicons/react/24/solid";
 
-import illustrion from "assets/images/illustration.jpg";
+import illustrion from "assets/svg/login.svg";
 
 function Form({ email, password, setEmail, setPassword, login, isLoading }) {
   return (
@@ -51,7 +51,7 @@ function Form({ email, password, setEmail, setPassword, login, isLoading }) {
         </div>
       </div>
       <div>
-        <img src={illustrion} alt="img" className="h-[90%]" />
+        <img src={illustrion} alt="img" className="h-[80%]" />
       </div>
     </div>
   );
