@@ -1,6 +1,6 @@
 import ExamCard from "components/examCard/ExamCard";
 import { useEffect, useState } from "react";
-import { PulseLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function ExamTab() {
@@ -24,7 +24,7 @@ function ExamTab() {
 
       if (data.status === "success") {
         setExamData(
-          data.exams.sort((a, b) => new Date(a.date) - new Date(b.date))
+          data.exams.sort((a, b) => new Date(a.date) - new Date(b.date)),
         );
         setTotalExams(data.results);
       }
@@ -79,7 +79,7 @@ function ExamTab() {
       <div className="flex flex-col gap-4">
         {isLoading && (
           <div className="flex justify-center pt-6">
-            <PulseLoader color="#7048e8" size={16} />
+            <ClipLoader color="#7048e8" size={40} />
           </div>
         )}
         {!isLoading &&
@@ -87,7 +87,7 @@ function ExamTab() {
             <ExamCard
               exam={exam}
               studentExam={studentExams.find(
-                (sExam) => sExam.examId === exam._id
+                (sExam) => sExam.examId === exam._id,
               )}
             />
           ))}

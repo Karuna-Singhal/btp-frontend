@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ClipLoader, PulseLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 import restClient from "restClient";
 import formatYearstamp from "utils/dateFormat";
@@ -15,6 +15,8 @@ function GeneralTab({ setValue }) {
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
   const [isLoadingExam, setIsLoadingExam] = useState(false);
   const [isLoadingAssignment, setIsLoadingAssignment] = useState(false);
+
+  console.log(examData);
 
   const getUserDetails = async () => {
     try {
@@ -53,21 +55,18 @@ function GeneralTab({ setValue }) {
           ...prev,
           totalClasses: data.subjects.reduce(
             (accumulator, subject) => accumulator + subject.totalClasses,
-            0
+            0,
           ),
         }));
       }
     } catch (error) {
       console.error(error);
-    } finally {
       setIsLoadingAttendance(false);
     }
   };
 
   const getStudentSubjects = async () => {
     try {
-      setIsLoadingAttendance(true);
-
       const { data } = await restClient({
         method: "GET",
         url: "/studentSubject",
@@ -82,7 +81,7 @@ function GeneralTab({ setValue }) {
           classesAttended: data.studentSubjects.reduce(
             (accumulator, subject) =>
               accumulator + subject.totalClassesAttended,
-            0
+            0,
           ),
         }));
       }
@@ -112,15 +111,12 @@ function GeneralTab({ setValue }) {
         }));
     } catch (error) {
       console.error(error);
-    } finally {
       setIsLoadingQuiz(false);
     }
   };
 
   const getStudentQuizzes = async () => {
     try {
-      setIsLoadingQuiz(true);
-
       const { data } = await restClient({
         method: "GET",
         url: "/studentQuiz",
@@ -157,18 +153,16 @@ function GeneralTab({ setValue }) {
         setExamData((prev) => ({
           ...prev,
           totalExams: data.results,
+          allExams: data.exams,
         }));
     } catch (error) {
       console.error(error);
-    } finally {
       setIsLoadingExam(false);
     }
   };
 
   const getStudentExams = async () => {
     try {
-      setIsLoadingExam(true);
-
       const { data } = await restClient({
         method: "GET",
         url: "/studentExam",
@@ -177,15 +171,23 @@ function GeneralTab({ setValue }) {
         },
       });
 
-      // if (data.status === "success")
-      // setExamData((prev) => ({
-      //   ...prev,
-      //   totalPassed: data.studentExams.reduce(
-      //     (accumulator, subject) =>
-      //       accumulator + subject.totalClassesAttended,
-      //     0
-      //   ),
-      // }));
+      if (data.status === "success") {
+        setExamData((prev) => ({
+          ...prev,
+          totalPassed: data.studentExams.reduce((accumulator, exam) => {
+            const examDetails = examData.allExams.find(
+              (e) => e._id === exam.examId,
+            );
+
+            const isPassed =
+              examDetails && examDetails.passingMarks <= exam.marksObtained
+                ? 1
+                : 0;
+
+            return accumulator + isPassed;
+          }, 0),
+        }));
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -212,15 +214,12 @@ function GeneralTab({ setValue }) {
         }));
     } catch (error) {
       console.error(error);
-    } finally {
       setIsLoadingAssignment(false);
     }
   };
 
   const getStudentAssignments = async () => {
     try {
-      setIsLoadingAssignment(true);
-
       const { data } = await restClient({
         method: "GET",
         url: "/studentAssignment",
@@ -249,90 +248,102 @@ function GeneralTab({ setValue }) {
     getAllQuizzes();
     getStudentQuizzes();
     getAllExams();
-    getStudentExams();
     getAllAssignments();
     getStudentAssignments();
   }, []);
 
+  useEffect(() => {
+    if (examData.allExams?.length) getStudentExams();
+  }, [examData.allExams]);
+
   return (
     <>
-      {isLoading && (
-        <div className="flex justify-center col-span-full pt-6">
-          <PulseLoader color="#17ddd6" size={16} />
+      <div className="flex flex-col gap-[1rem]">
+        <div className="flex gap-[4.4rem] shadow-lg border-2 border-primary-teal text-primary-white px-[1.8rem] py-[1.2rem] rounded-[1.4rem] font-semibold w-fit min-w-[50%]">
+          {isLoading && (
+            <div className="flex justify-center w-full items-center min-h-[4rem]">
+              <ClipLoader color="#17ddd6" size={20} />
+            </div>
+          )}
+          {!isLoading && (
+            <>
+              <div className="flex flex-col gap-[0.5rem]">
+                <div className="flex gap-[1rem] text-primary-black">
+                  Course:{" "}
+                  <span className="text-primary-teal">
+                    {userData.course?.name}
+                  </span>
+                </div>
+                <div className="flex gap-[0.6rem] text-primary-black">
+                  Course Start Date:{" "}
+                  <span className="text-primary-teal">
+                    {formatYearstamp(userData.courseStartDate)}
+                  </span>
+                </div>
+                <div className="flex gap-[0.8rem] text-primary-black">
+                  Course End Date:{" "}
+                  <span className="text-primary-teal">
+                    {formatYearstamp(userData.courseEndDate)}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-[0.5rem] text-primary-black">
+                <div className="flex gap-[0.5rem] text-primary-black">
+                  Student Id:{" "}
+                  <span className="text-primary-teal">
+                    {userData.instituteId}
+                  </span>
+                </div>
+                <div className="flex gap-[0.8rem] text-primary-black">
+                  Email:{" "}
+                  <span className="text-primary-teal">
+                    {userData.userId?.email}{" "}
+                  </span>
+                </div>
+                <div className="flex gap-[1rem]">
+                  Gender:{" "}
+                  <span className="text-primary-teal">{userData.gender}</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-[0.5rem] text-primary-black">
+                <div className="flex gap-[0.5rem] text-primary-black">
+                  Mother's Name:{" "}
+                  <span className="text-primary-teal">
+                    {userData.motherName}
+                  </span>
+                </div>
+                <div className="flex gap-[1rem] text-primary-black">
+                  Father's Name:{" "}
+                  <span className="text-primary-teal">
+                    {userData.fatherName}
+                  </span>
+                </div>
+                <div className="flex gap-[0.8rem] text-primary-black">
+                  Phone:{" "}
+                  <span className="text-primary-teal">{userData.phone} </span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-      )}
-      {!isLoading && (
-        <div className="flex flex-col gap-[1rem]">
-          <div className="flex gap-[4.4rem] shadow-lg border-2 border-primary-teal text-primary-white px-[1.8rem] py-[1.2rem] rounded-[1.4rem] font-semibold w-fit">
-            <div className="flex flex-col gap-[0.5rem]">
-              <div className="flex gap-[1rem] text-primary-black">
-                Course:{" "}
-                <span className="text-primary-teal">
-                  {userData.course?.name}
-                </span>
-              </div>
-              <div className="flex gap-[0.6rem] text-primary-black">
-                Course Start Date:{" "}
-                <span className="text-primary-teal">
-                  {formatYearstamp(userData.courseStartDate)}
-                </span>
-              </div>
-              <div className="flex gap-[0.8rem] text-primary-black">
-                Course End Date:{" "}
-                <span className="text-primary-teal">
-                  {formatYearstamp(userData.courseEndDate)}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-[0.5rem] text-primary-black">
-              <div className="flex gap-[0.5rem] text-primary-black">
-                Student Id:{" "}
-                <span className="text-primary-teal">
-                  {userData.instituteId}
-                </span>
-              </div>
-              <div className="flex gap-[0.8rem] text-primary-black">
-                Email:{" "}
-                <span className="text-primary-teal">
-                  {userData.userId?.email}{" "}
-                </span>
-              </div>
-              <div className="flex gap-[1rem]">
-                Gender:{" "}
-                <span className="text-primary-teal">{userData.gender}</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-[0.5rem] text-primary-black">
-              <div className="flex gap-[0.5rem] text-primary-black">
-                Mother's Name:{" "}
-                <span className="text-primary-teal">{userData.motherName}</span>
-              </div>
-              <div className="flex gap-[1rem] text-primary-black">
-                Father's Name:{" "}
-                <span className="text-primary-teal">{userData.fatherName}</span>
-              </div>
-              <div className="flex gap-[0.8rem] text-primary-black">
-                Phone:{" "}
-                <span className="text-primary-teal">{userData.phone} </span>
-              </div>
-            </div>
-          </div>
 
-          <div className="flex gap-[1rem] w-full">
-            {isLoadingAttendance && (
-              <div className="flex justify-center pt-6">
-                <ClipLoader color="#be4bdb" size={16} />
-              </div>
-            )}
-            {!isLoadingAttendance && (
-              <div className="flex flex-col gap-[1rem] font-semibold w-1/4">
-                <span className="text-primary-grape  text-[1.4rem]">
-                  Attendance
-                </span>
-                <div
-                  onClick={() => setValue("subjects")}
-                  className="flex flex-col gap-[0.4rem] shadow-lg border-2 border-primary-grape px-4 py-2 rounded-[1.2rem] cursor-pointer"
-                >
+        <div className="flex gap-[1rem] w-full">
+          <div className="flex flex-col gap-[1rem] font-semibold w-1/4">
+            <span className="text-primary-grape  text-[1.4rem]">
+              Attendance
+            </span>
+
+            <div
+              onClick={() => setValue("subjects")}
+              className="flex flex-col gap-[0.4rem] shadow-lg border-2 border-primary-grape px-4 py-2 rounded-[1.2rem] cursor-pointer"
+            >
+              {isLoadingAttendance && (
+                <div className="flex justify-center items-center min-h-[4rem]">
+                  <ClipLoader color="#be4bdb" size={20} />
+                </div>
+              )}
+              {!isLoadingAttendance && (
+                <>
                   <div className="flex gap-[0.5rem] text-[1.2rem] text-primary-grape">
                     Total Classes: <span>{attendanceData.totalClasses}</span>
                   </div>
@@ -346,21 +357,25 @@ function GeneralTab({ setValue }) {
                         attendanceData.classesAttended}
                     </span>
                   </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-[1rem] font-semibold w-1/4 ">
+            <span className="text-[1.4rem] text-primary-pink">Quiz</span>
+
+            <div
+              onClick={() => setValue("quiz")}
+              className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-pink px-4 py-2 rounded-[1.2rem] cursor-pointer"
+            >
+              {isLoadingQuiz && (
+                <div className="flex justify-center min-h-[4rem] items-center">
+                  <ClipLoader color="#d6336c" size={20} />
                 </div>
-              </div>
-            )}
-            {isLoadingQuiz && (
-              <div className="flex justify-center pt-6">
-                <ClipLoader color="#d6336c" size={16} />
-              </div>
-            )}
-            {!isLoadingQuiz && (
-              <div className="flex flex-col gap-[1rem] font-semibold w-1/4 ">
-                <span className="text-[1.4rem] text-primary-pink">Quiz</span>
-                <div
-                  onClick={() => setValue("quiz")}
-                  className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-pink px-4 py-2 rounded-[1.2rem] cursor-pointer"
-                >
+              )}
+              {!isLoadingQuiz && (
+                <>
                   <div className="flex gap-[0.5rem] text-[1.2rem] text-primary-pink">
                     Total Quizzes: <span>{quizData.totalQuiz}</span>
                   </div>
@@ -372,51 +387,56 @@ function GeneralTab({ setValue }) {
                     Missed:{" "}
                     <span>{quizData.totalQuiz - quizData.quizzesAttended}</span>
                   </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-[1rem] font-semibold w-1/4">
+            <span className="text-primary-violate text-[1.4rem]">Exams</span>
+
+            <div
+              onClick={() => setValue("exams")}
+              className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-violate px-4 py-2 rounded-[1.2rem] cursor-pointer"
+            >
+              {isLoadingExam && (
+                <div className="flex justify-center min-h-[4rem] items-center">
+                  <ClipLoader color="#7048e8" size={20} />
                 </div>
-              </div>
-            )}
-            {isLoadingExam && (
-              <div className="flex justify-center pt-6">
-                <ClipLoader color="#7048e8" size={16} />
-              </div>
-            )}
-            {!isLoadingExam && (
-              <div className="flex flex-col gap-[1rem] font-semibold w-1/4">
-                <span className="text-primary-violate text-[1.4rem]">
-                  Exams
-                </span>
-                <div
-                  onClick={() => setValue("exams")}
-                  className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-violate px-4 py-2 rounded-[1.2rem] cursor-pointer"
-                >
+              )}
+              {!isLoadingExam && (
+                <>
                   <div className="flex gap-[0.5rem] text-[1.2rem] text-primary-violate">
                     Total Exams: <span>{examData.totalExams}</span>
                   </div>
                   <div className="flex gap-[0.3rem] text-primary-green">
-                    Passed: <span>{examData.examsAttended}</span>
+                    Passed: <span>{examData.totalPassed}</span>
                   </div>
                   <div className="flex gap-[0.3rem] text-primary-red">
                     Failed:{" "}
-                    <span>{examData.totalExams - examData.examsAttended}</span>
+                    <span>{examData.totalExams - examData.totalPassed}</span>
                   </div>
-                </div>
-              </div>
-            )}
-            {isLoadingAssignment && (
-              <div className="flex justify-center pt-6">
-                <ClipLoader color="#f76707" size={16} />
-              </div>
-            )}
+                </>
+              )}
+            </div>
+          </div>
 
-            {!isLoadingAssignment && (
-              <div className="flex flex-col gap-[1rem] font-semibold w-1/4">
-                <span className="text-primary-orange text-[1.4rem]">
-                  Assignment
-                </span>
-                <div
-                  onClick={() => setValue("assignment")}
-                  className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-orange px-4 py-2 rounded-[1.2rem] cursor-pointer"
-                >
+          <div className="flex flex-col gap-[1rem] font-semibold w-1/4">
+            <span className="text-primary-orange text-[1.4rem]">
+              Assignment
+            </span>
+
+            <div
+              onClick={() => setValue("assignment")}
+              className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-orange px-4 py-2 rounded-[1.2rem] cursor-pointer"
+            >
+              {isLoadingAssignment && (
+                <div className="flex justify-center min-h-[4rem] items-center">
+                  <ClipLoader color="#f76707" size={20} />
+                </div>
+              )}
+              {!isLoadingAssignment && (
+                <>
                   <div className="flex gap-[0.5rem] text-[1.2rem] text-primary-orange">
                     Total Assignment:{" "}
                     <span>{assignmentData.totalAssignment}</span>
@@ -431,12 +451,12 @@ function GeneralTab({ setValue }) {
                         assignmentData.assignmentAttended}
                     </span>
                   </div>
-                </div>
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
