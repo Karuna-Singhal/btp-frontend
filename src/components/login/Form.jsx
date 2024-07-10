@@ -1,18 +1,19 @@
 import React from "react";
+import { ClipLoader } from "react-spinners";
 import { UserIcon } from "@heroicons/react/24/solid";
+
 import illustrion from "assets/images/illustration.jpg";
 
-function Form({ email, password, setEmail, setPassword, login }) {
+function Form({ email, password, setEmail, setPassword, login, isLoading }) {
   return (
     <div className="flex grow items-center px-[2rem] gap-[2rem] justify-between">
       <div className="flex flex-col gap-[1rem]">
-        <span className="font-bold text-[4.4rem] tracking-tighter">
-          Take Control of{" "}
-          <span className="text-secondary-teal">Your Money</span>
+        <span className="font-bold text-[4.4rem]">
+          Student <span className="text-secondary-teal">Login</span>
         </span>
         <p className="text-[1.2rem] font-semibold">
-          Personal budgeting is the secret to financial freedom. Start your
-          journey today.
+          {" "}
+          Always Stay Updated in your student portal
         </p>
         <div className="flex flex-col gap-[1rem] w-[90%]">
           <input
@@ -33,11 +34,19 @@ function Form({ email, password, setEmail, setPassword, login }) {
           />
           <button
             type="submit"
-            className="bg-primary-black text-primary-white flex items-center justify-center gap-[0.5rem] px-[1rem] py-[0.8rem] rounded-[0.6rem]"
+            className={`${
+              isLoading ? "bg-secondary-black" : "bg-primary-black"
+            } text-primary-white flex items-center justify-center gap-[0.5rem] px-[1rem] py-[0.8rem] rounded-[0.6rem]`}
             onClick={login}
+            disabled={isLoading}
           >
             <span>Login</span>
             <UserIcon width={20} />
+            {isLoading && (
+              <div className="flex justify-center items-center">
+                <ClipLoader color="#fff" size={18} />
+              </div>
+            )}
           </button>
         </div>
       </div>

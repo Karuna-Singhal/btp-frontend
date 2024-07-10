@@ -17,6 +17,12 @@ function AssignmentCard({ assignment, studentAssignment }) {
         <span className="text-primary-black">{assignment.description}</span>
       </div>
       <div className="flex gap-[0.5rem] ">
+        <span className="font-semibold text-primary-orange"> Deadline:</span>
+        <span className="text-primary-black">
+          {formatYearstamp(assignment.deadline)}
+        </span>
+      </div>
+      <div className="flex gap-[0.5rem] ">
         <span className="font-semibold text-primary-orange">
           {" "}
           Maximum Marks:
@@ -24,9 +30,12 @@ function AssignmentCard({ assignment, studentAssignment }) {
         <span className="text-primary-black">{assignment.maximumMarks}</span>
       </div>
       <div className="flex gap-[0.5rem] ">
-        <span className="font-semibold text-primary-orange"> Deadline:</span>
+        <span className="font-semibold text-primary-orange">
+          {" "}
+          Marks Obtained:
+        </span>
         <span className="text-primary-black">
-          {formatYearstamp(assignment.deadline)}
+          {studentAssignment.marksObtained || 0}
         </span>
       </div>
     </div>

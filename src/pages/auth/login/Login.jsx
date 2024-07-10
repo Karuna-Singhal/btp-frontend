@@ -2,19 +2,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import wave from "assets/svg/wave.svg";
-
 import Form from "components/login/Form";
 import restClient from "restClient";
+
+import wave from "assets/svg/wave.svg";
 
 function Login() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const login = async () => {
     try {
+      setIsLoading(true);
+
       const { data } = await restClient({
         method: "POST",
         url: "/auth/login",
@@ -36,12 +39,14 @@ function Login() {
     } catch (error) {
       console.error(error);
       toast.error(error.response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col h-[100vh]">
-      <Form {...{ email, password, setEmail, setPassword, login }} />
+      <Form {...{ email, password, setEmail, setPassword, login, isLoading }} />
       <img src={wave} alt="" />
     </div>
   );
