@@ -7,6 +7,9 @@ import formatYearstamp from "utils/dateFormat";
 function GeneralTab({ setValue }) {
   const [userData, setUserData] = useState({});
   const [attendanceData, setAttendanceData] = useState({});
+  const [quizData, setQuizData] = useState({});
+  const [examData, setExamData] = useState({});
+  const [assignmentData, setAssignmentData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAttendance, setIsLoadingAttendance] = useState(false);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
@@ -61,9 +64,194 @@ function GeneralTab({ setValue }) {
     }
   };
 
+  const getStudentSubjects = async () => {
+    try {
+      setIsLoadingAttendance(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/studentSubject",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success") {
+        setAttendanceData((prev) => ({
+          ...prev,
+          classesAttended: data.studentSubjects.reduce(
+            (accumulator, subject) =>
+              accumulator + subject.totalClassesAttended,
+            0
+          ),
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingAttendance(false);
+    }
+  };
+
+  const getAllQuizzes = async () => {
+    try {
+      setIsLoadingQuiz(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/quiz",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success")
+        setQuizData((prev) => ({
+          ...prev,
+          totalQuiz: data.results,
+        }));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingQuiz(false);
+    }
+  };
+
+  const getStudentQuizzes = async () => {
+    try {
+      setIsLoadingQuiz(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/studentQuiz",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success")
+        setQuizData((prev) => ({
+          ...prev,
+          quizzesAttended: data.results,
+        }));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingQuiz(false);
+    }
+  };
+
+  const getAllExams = async () => {
+    try {
+      setIsLoadingExam(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/exam",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success")
+        setExamData((prev) => ({
+          ...prev,
+          totalExams: data.results,
+        }));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingExam(false);
+    }
+  };
+
+  const getStudentExams = async () => {
+    try {
+      setIsLoadingExam(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/studentExam",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      // if (data.status === "success")
+      // setExamData((prev) => ({
+      //   ...prev,
+      //   totalPassed: data.studentExams.reduce(
+      //     (accumulator, subject) =>
+      //       accumulator + subject.totalClassesAttended,
+      //     0
+      //   ),
+      // }));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingExam(false);
+    }
+  };
+
+  const getAllAssignments = async () => {
+    try {
+      setIsLoadingAssignment(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/assignment",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success")
+        setAssignmentData((prev) => ({
+          ...prev,
+          totalAssignment: data.results,
+        }));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingAssignment(false);
+    }
+  };
+
+  const getStudentAssignments = async () => {
+    try {
+      setIsLoadingAssignment(true);
+
+      const { data } = await restClient({
+        method: "GET",
+        url: "/studentAssignment",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (data.status === "success") {
+        setAssignmentData((prev) => ({
+          ...prev,
+          assignmentAttended: data.results,
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingAssignment(false);
+    }
+  };
+
   useEffect(() => {
     getUserDetails();
     getAllSubjects();
+    getStudentSubjects();
+    getAllQuizzes();
+    getStudentQuizzes();
+    getAllExams();
+    getStudentExams();
+    getAllAssignments();
+    getStudentAssignments();
   }, []);
 
   return (
@@ -149,10 +337,14 @@ function GeneralTab({ setValue }) {
                     Total Classes: <span>{attendanceData.totalClasses}</span>
                   </div>
                   <div className="flex gap-[0.5rem] text-primary-green">
-                    Attended: <span>120</span>
+                    Attended: <span>{attendanceData.classesAttended}</span>
                   </div>
                   <div className="flex gap-[0.5rem] text-primary-red">
-                    Missed: <span>25</span>
+                    Missed:{" "}
+                    <span>
+                      {attendanceData.totalClasses -
+                        attendanceData.classesAttended}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -170,14 +362,15 @@ function GeneralTab({ setValue }) {
                   className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-pink px-4 py-2 rounded-[1.2rem] cursor-pointer"
                 >
                   <div className="flex gap-[0.5rem] text-[1.2rem] text-primary-pink">
-                    Total Quizzes: <span>145</span>
+                    Total Quizzes: <span>{quizData.totalQuiz}</span>
                   </div>
 
                   <div className="flex gap-[0.3rem] text-primary-green">
-                    Attempted: <span>120</span>
+                    Attempted: <span>{quizData.quizzesAttended}</span>
                   </div>
                   <div className="flex gap-[0.3rem] text-primary-red">
-                    Missed: <span>120</span>
+                    Missed:{" "}
+                    <span>{quizData.totalQuiz - quizData.quizzesAttended}</span>
                   </div>
                 </div>
               </div>
@@ -197,18 +390,19 @@ function GeneralTab({ setValue }) {
                   className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-violate px-4 py-2 rounded-[1.2rem] cursor-pointer"
                 >
                   <div className="flex gap-[0.5rem] text-[1.2rem] text-primary-violate">
-                    Total Exams: <span>145</span>
+                    Total Exams: <span>{examData.totalExams}</span>
                   </div>
                   <div className="flex gap-[0.3rem] text-primary-green">
-                    Passed: <span>120</span>
+                    Passed: <span>{examData.examsAttended}</span>
                   </div>
                   <div className="flex gap-[0.3rem] text-primary-red">
-                    Failed: <span>120</span>
+                    Failed:{" "}
+                    <span>{examData.totalExams - examData.examsAttended}</span>
                   </div>
                 </div>
               </div>
             )}
-            {isLoading && (
+            {isLoadingAssignment && (
               <div className="flex justify-center pt-6">
                 <ClipLoader color="#f76707" size={16} />
               </div>
@@ -224,13 +418,18 @@ function GeneralTab({ setValue }) {
                   className="flex flex-col gap-[0.4rem] bg-primary-white shadow-lg border-2 border-primary-orange px-4 py-2 rounded-[1.2rem] cursor-pointer"
                 >
                   <div className="flex gap-[0.5rem] text-[1.2rem] text-primary-orange">
-                    Total Assignment: <span>145</span>
+                    Total Assignment:{" "}
+                    <span>{assignmentData.totalAssignment}</span>
                   </div>
                   <div className="flex gap-[0.3rem] text-primary-green">
-                    Attempted: <span>120</span>
+                    Attempted: <span>{assignmentData.assignmentAttended}</span>
                   </div>
                   <div className="flex gap-[0.3rem] text-primary-red">
-                    Missed: <span>120</span>
+                    Missed:{" "}
+                    <span>
+                      {assignmentData.totalAssignment -
+                        assignmentData.assignmentAttended}
+                    </span>
                   </div>
                 </div>
               </div>
