@@ -22,7 +22,7 @@ function Form({ email, password, setEmail, setPassword, login, isLoading }) {
             placeholder="Email ID"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-[0.6rem] px-[1rem] py-[0.8rem]"
+            className="rounded-[0.6rem] px-[1rem] py-[0.8rem] border-[1px] border-primary-black"
           />
           <input
             type="password"
@@ -30,7 +30,7 @@ function Form({ email, password, setEmail, setPassword, login, isLoading }) {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-[0.6rem] px-[1rem] py-[0.8rem]"
+            className="rounded-[0.6rem] px-[1rem] py-[0.8rem] border-[1px] border-primary-black"
           />
           <button
             type="submit"
