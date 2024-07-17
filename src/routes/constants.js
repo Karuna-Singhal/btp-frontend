@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 
 import Login from "../pages/auth/login/Login";
 import Profile from "pages/studentProfile/Profile";
+import AdminDashBoard from "pages/adminDashboard/AdminDashBoard";
 
 export const authRoutes = [
   {
@@ -24,7 +25,7 @@ export const protectedRoutes = [
   },
   {
     path: "/admin-dashboard",
-    // component: <BudgetOverview />,
+    component: <AdminDashBoard />,
     title: "Admin Dashboard",
   },
 ];
