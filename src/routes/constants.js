@@ -24,6 +24,11 @@ export const protectedRoutes = [
     title: "My Profile",
   },
   {
+    path: "/student-profile/:instituteId",
+    component: <Profile />,
+    title: "Student Profile",
+  },
+  {
     path: "/admin-dashboard",
     component: <AdminDashBoard />,
     title: "Admin Dashboard",
