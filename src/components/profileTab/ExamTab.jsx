@@ -1,9 +1,11 @@
 import ExamCard from "components/examCard/ExamCard";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function ExamTab() {
+  const { instituteId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [examData, setExamData] = useState([]);
   const [totalExams, setTotalExams] = useState(0);
@@ -12,11 +14,15 @@ function ExamTab() {
 
   const getAllExams = async () => {
     try {
+      let url = "/exam";
+
+      if (instituteId) url = `/exam/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/exam",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -37,11 +43,15 @@ function ExamTab() {
 
   const getStudentExams = async () => {
     try {
+      let url = "/studentExam";
+
+      if (instituteId) url = `/studentExam/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/studentExam",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

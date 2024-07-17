@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
 import restClient from "restClient";
 import formatYearstamp from "utils/dateFormat";
 
 function GeneralTab({ setValue }) {
+  const { instituteId } = useParams();
   const [userData, setUserData] = useState({});
   const [attendanceData, setAttendanceData] = useState({});
   const [quizData, setQuizData] = useState({});
@@ -18,11 +20,15 @@ function GeneralTab({ setValue }) {
 
   const getUserDetails = async () => {
     try {
+      let url = "/student";
+
+      if (instituteId) url = `/student/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/student",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -38,11 +44,15 @@ function GeneralTab({ setValue }) {
 
   const getAllSubjects = async () => {
     try {
+      let url = "/subject";
+
+      if (instituteId) url = `/subject/${instituteId}`;
+
       setIsLoadingAttendance(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/subject",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -53,7 +63,7 @@ function GeneralTab({ setValue }) {
           ...prev,
           totalClasses: data.subjects.reduce(
             (accumulator, subject) => accumulator + subject.totalClasses,
-            0
+            0,
           ),
         }));
       }
@@ -65,9 +75,13 @@ function GeneralTab({ setValue }) {
 
   const getStudentSubjects = async () => {
     try {
+      let url = "/studentSubject";
+
+      if (instituteId) url = `/studentSubject/${instituteId}`;
+
       const { data } = await restClient({
         method: "GET",
-        url: "/studentSubject",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -79,7 +93,7 @@ function GeneralTab({ setValue }) {
           classesAttended: data.studentSubjects.reduce(
             (accumulator, subject) =>
               accumulator + subject.totalClassesAttended,
-            0
+            0,
           ),
         }));
       }
@@ -92,11 +106,15 @@ function GeneralTab({ setValue }) {
 
   const getAllQuizzes = async () => {
     try {
+      let url = "/quiz";
+
+      if (instituteId) url = `/quiz/${instituteId}`;
+
       setIsLoadingQuiz(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/quiz",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -115,9 +133,13 @@ function GeneralTab({ setValue }) {
 
   const getStudentQuizzes = async () => {
     try {
+      let url = "/studentQuiz";
+
+      if (instituteId) url = `/studentQuiz/${instituteId}`;
+
       const { data } = await restClient({
         method: "GET",
-        url: "/studentQuiz",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -137,11 +159,15 @@ function GeneralTab({ setValue }) {
 
   const getAllExams = async () => {
     try {
+      let url = "/exam";
+
+      if (instituteId) url = `/exam/${instituteId}`;
+
       setIsLoadingExam(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/exam",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -161,9 +187,13 @@ function GeneralTab({ setValue }) {
 
   const getStudentExams = async () => {
     try {
+      let url = "/studentExam";
+
+      if (instituteId) url = `/studentExam/${instituteId}`;
+
       const { data } = await restClient({
         method: "GET",
-        url: "/studentExam",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -174,7 +204,7 @@ function GeneralTab({ setValue }) {
           ...prev,
           totalPassed: data.studentExams.reduce((accumulator, exam) => {
             const examDetails = examData.allExams.find(
-              (e) => e._id === exam.examId
+              (e) => e._id === exam.examId,
             );
 
             const isPassed =
@@ -195,11 +225,15 @@ function GeneralTab({ setValue }) {
 
   const getAllAssignments = async () => {
     try {
+      let url = "/assignment";
+
+      if (instituteId) url = `/assignment/${instituteId}`;
+
       setIsLoadingAssignment(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/assignment",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -218,9 +252,13 @@ function GeneralTab({ setValue }) {
 
   const getStudentAssignments = async () => {
     try {
+      let url = "/studentAssignment";
+
+      if (instituteId) url = `/studentAssignment/${instituteId}`;
+
       const { data } = await restClient({
         method: "GET",
-        url: "/studentAssignment",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -257,7 +295,7 @@ function GeneralTab({ setValue }) {
   return (
     <>
       <div className="flex flex-col gap-[1rem]">
-        <div className="flex gap-[4.4rem] shadow-lg border-2 border-primary-teal text-primary-white px-[1.8rem] py-[1.2rem] rounded-[1.4rem] font-semibold w-fit min-w-[50%]">
+        <div className="flex gap-[4.4rem] shadow-lg border-2 border-primary-teal text-primary-white px-[1.8rem] py-[1.2rem] rounded-[1.4rem] font-semibold w-fit min-w-[50%] items-center">
           {isLoading && (
             <div className="flex justify-center w-full items-center min-h-[4rem]">
               <ClipLoader color="#17ddd6" size={20} />
@@ -265,60 +303,68 @@ function GeneralTab({ setValue }) {
           )}
           {!isLoading && (
             <>
+              {instituteId && (
+                <div className="flex gap-[1rem] text-primary-teal text-[1.8rem]">
+                  Name:{" "}
+                  <span className="text-primary-black">
+                    {userData.userId?.name}
+                  </span>
+                </div>
+              )}
               <div className="flex flex-col gap-[0.5rem]">
-                <div className="flex gap-[1rem] text-primary-black">
+                <div className="flex gap-[1rem] text-primary-teal">
                   Course:{" "}
-                  <span className="text-primary-teal">
+                  <span className="text-primary-black">
                     {userData.course?.name}
                   </span>
                 </div>
-                <div className="flex gap-[0.6rem] text-primary-black">
+                <div className="flex gap-[0.6rem] text-primary-teal">
                   Course Start Date:{" "}
-                  <span className="text-primary-teal">
+                  <span className="text-primary-black">
                     {formatYearstamp(userData.courseStartDate)}
                   </span>
                 </div>
-                <div className="flex gap-[0.8rem] text-primary-black">
+                <div className="flex gap-[0.8rem] text-primary-teal">
                   Course End Date:{" "}
-                  <span className="text-primary-teal">
+                  <span className="text-primary-black">
                     {formatYearstamp(userData.courseEndDate)}
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col gap-[0.5rem] text-primary-black">
-                <div className="flex gap-[0.5rem] text-primary-black">
+              <div className="flex flex-col gap-[0.5rem] text-primary-teal">
+                <div className="flex gap-[0.5rem] text-primary-teal">
                   Institue Id:{" "}
-                  <span className="text-primary-teal">
+                  <span className="text-primary-black">
                     {userData.instituteId}
                   </span>
                 </div>
-                <div className="flex gap-[0.8rem] text-primary-black">
+                <div className="flex gap-[0.8rem] text-primary-teal">
                   Email:{" "}
-                  <span className="text-primary-teal">
+                  <span className="text-primary-black">
                     {userData.userId?.email}{" "}
                   </span>
                 </div>
                 <div className="flex gap-[1rem]">
                   Gender:{" "}
-                  <span className="text-primary-teal">{userData.gender}</span>
+                  <span className="text-primary-black">{userData.gender}</span>
                 </div>
               </div>
-              <div className="flex flex-col gap-[0.5rem] text-primary-black">
-                <div className="flex gap-[0.5rem] text-primary-black">
+              <div className="flex flex-col gap-[0.5rem]">
+                <div className="flex gap-[0.5rem] text-primary-teal">
                   Mother's Name:{" "}
-                  <span className="text-primary-teal">
+                  <span className="text-primary-black">
                     {userData.motherName}
                   </span>
                 </div>
-                <div className="flex gap-[1rem] text-primary-black">
+                <div className="flex gap-[1rem] text-primary-teal">
                   Father's Name:{" "}
-                  <span className="text-primary-teal">
+                  <span className="text-primary-black">
                     {userData.fatherName}
                   </span>
                 </div>
-                <div className="flex gap-[0.8rem] text-primary-black">
+                <div className="flex gap-[0.8rem] text-primary-teal">
                   Phone:{" "}
-                  <span className="text-primary-teal">{userData.phone} </span>
+                  <span className="text-primary-black">{userData.phone} </span>
                 </div>
               </div>
             </>

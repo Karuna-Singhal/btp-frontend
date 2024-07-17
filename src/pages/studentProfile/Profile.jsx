@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLeftCircleIcon,
+  ArrowRightEndOnRectangleIcon,
+  ArrowRightIcon,
+} from "@heroicons/react/24/solid";
 
 import LabTabs from "components/profileTab/Tab";
 import GeneralTab from "components/profileTab/GeneralTab";
@@ -11,6 +15,7 @@ import AssignmentTab from "components/profileTab/AssignmentTab";
 import SubjectTab from "components/profileTab/SubjectTab";
 
 function Profile() {
+  const { instituteId } = useParams();
   const navigate = useNavigate();
   const [value, setValue] = useState("general");
 
@@ -29,15 +34,27 @@ function Profile() {
         </span>
         <LabTabs value={value} onChange={(e, newValue) => setValue(newValue)} />
 
-        <div className="flex gap-4 items-center">
-          <span className="text-primary-teal font-semibold text-[1.2rem]">
-            {localStorage.getItem("name")}
-          </span>
-          <ArrowRightEndOnRectangleIcon
-            className="size-6 text-primary-red cursor-pointer"
-            onClick={logout}
-          />
-        </div>
+        {instituteId ? (
+          <div
+            className="flex gap-2 items-center cursor-pointer"
+            onClick={() => navigate("/admin-dashboard")}
+          >
+            <ArrowLeftCircleIcon className="size-8 text-primary-teal" />
+            <span className="text-primary-teal font-semibold text-[1.2rem]">
+              Admin Dashboard
+            </span>
+          </div>
+        ) : (
+          <div className="flex gap-4 items-center">
+            <span className="text-primary-teal font-semibold text-[1.2rem]">
+              {localStorage.getItem("name")}
+            </span>
+            <ArrowRightEndOnRectangleIcon
+              className="size-6 text-primary-red cursor-pointer"
+              onClick={logout}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mt-[1rem]">

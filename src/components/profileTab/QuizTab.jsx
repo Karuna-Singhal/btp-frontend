@@ -1,9 +1,11 @@
 import QuizCard from "components/quizCard/QuizCard";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function QuizTab() {
+  const { instituteId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [quizData, setQuizData] = useState([]);
   const [totalQuizzes, setTotalQuizzes] = useState(0);
@@ -12,11 +14,15 @@ function QuizTab() {
 
   const getAllQuizzes = async () => {
     try {
+      let url = "/quiz";
+
+      if (instituteId) url = `/quiz/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/quiz",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -37,11 +43,15 @@ function QuizTab() {
 
   const getStudentQuizzes = async () => {
     try {
+      let url = "/studentQuiz";
+
+      if (instituteId) url = `/studentQuiz/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/studentQuiz",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

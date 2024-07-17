@@ -1,9 +1,11 @@
 import SubjectCard from "components/subjectCard/SubjectCard";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function SubjectTab() {
+  const { instituteId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [subjectData, setSubjectData] = useState([]);
   const [totalSubjects, setTotalSubjects] = useState(0);
@@ -11,11 +13,15 @@ function SubjectTab() {
 
   const getAllSubjects = async () => {
     try {
+      let url = "/subject";
+
+      if (instituteId) url = `/subject/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/subject",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -34,11 +40,15 @@ function SubjectTab() {
 
   const getStudentSubjects = async () => {
     try {
+      let url = "/studentSubject";
+
+      if (instituteId) url = `/studentSubject/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/studentSubject",
+        url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

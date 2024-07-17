@@ -1,8 +1,11 @@
 import formatYearstamp from "utils/dateFormat";
 
-function StudentCard({ student }) {
+function StudentCard({ student, onClick }) {
   return (
-    <div className="flex flex-col gap-[0.3rem] bg-primary-white rounded-[1rem] p-4 border-2 border-primary-teal">
+    <div
+      className="flex flex-col gap-[0.3rem] bg-primary-white rounded-[1rem] p-4 border-2 border-primary-teal cursor-pointer"
+      onClick={onClick}
+    >
       <h1 className="text-[1.2rem] font-semibold text-primary-black mb-2">
         {student.userId?.name}
       </h1>

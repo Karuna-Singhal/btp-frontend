@@ -1,9 +1,11 @@
 import AssignmentCard from "components/assignmentCard/AssignmentCard";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import restClient from "restClient";
 
 function AssignmentTab() {
+  const { instituteId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [assignmentData, setAssignmentData] = useState([]);
   const [totalAssignments, setTotalAssignments] = useState(0);
@@ -12,11 +14,14 @@ function AssignmentTab() {
 
   const getAllAssignments = async () => {
     try {
+      let url = "/assignment";
+      if (instituteId) url = `/assignment/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/assignment",
+        url: url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -35,11 +40,15 @@ function AssignmentTab() {
 
   const getStudentAssignments = async () => {
     try {
+      let url = "/studentAssignment";
+
+      if (instituteId) url = `/studentAssignment/${instituteId}`;
+
       setIsLoading(true);
 
       const { data } = await restClient({
         method: "GET",
-        url: "/studentAssignment",
+        url: url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

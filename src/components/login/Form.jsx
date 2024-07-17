@@ -9,11 +9,11 @@ function Form({ email, password, setEmail, setPassword, login, isLoading }) {
     <div className="flex grow items-center px-[2rem] gap-[2rem] justify-between">
       <div className="flex flex-col gap-[1rem]">
         <span className="font-bold text-[4.4rem]">
-          Student <span className="text-secondary-teal">Login</span>
+          <span className="text-secondary-teal">IITM Portal</span>
         </span>
         <p className="text-[1.2rem] font-semibold">
           {" "}
-          Always Stay Updated in your student portal
+          Login to your account to continue
         </p>
         <div className="flex flex-col gap-[1rem] w-[90%]">
           <input

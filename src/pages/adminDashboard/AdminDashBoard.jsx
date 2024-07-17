@@ -46,7 +46,7 @@ function AdminDashBoard() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-[1rem] px-[2rem] py-[1rem] ">
+    <div className="flex flex-col gap-[1rem] px-[2rem] py-[1rem]">
       <div className="flex items-center justify-between">
         <span className="text-primary-teal font-bold text-[1.8rem]">
           Admin Dashboard
@@ -60,7 +60,7 @@ function AdminDashBoard() {
       </div>
       <div className="flex gap-[2rem] flex-wrap">
         {isLoading && (
-          <div className="flex justify-center pt-6">
+          <div className="flex justify-center w-full pt-6">
             <ClipLoader color="#1dbbc3" size={40} />
           </div>
         )}
@@ -68,7 +68,9 @@ function AdminDashBoard() {
           return (
             <StudentCard
               student={student}
-              onClick={() => navigate(`/my-profile/${student.instituteId}`)}
+              onClick={() =>
+                navigate(`/student-profile/${student.instituteId}`)
+              }
             />
           );
         })}
