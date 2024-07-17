@@ -9,7 +9,7 @@ function Form({ email, password, setEmail, setPassword, login, isLoading }) {
     <div className="flex grow items-center px-[2rem] gap-[2rem] justify-between">
       <div className="flex flex-col gap-[1rem]">
         <span className="font-bold text-[4.4rem]">
-          <span className="text-secondary-teal">IITM Portal</span>
+          <span className="text-secondary-teal">IIITM Portal</span>
         </span>
         <p className="text-[1.2rem] font-semibold">
           {" "}
