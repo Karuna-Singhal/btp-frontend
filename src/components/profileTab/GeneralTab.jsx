@@ -287,7 +287,7 @@ function GeneralTab({ setValue }) {
               </div>
               <div className="flex flex-col gap-[0.5rem] text-primary-black">
                 <div className="flex gap-[0.5rem] text-primary-black">
-                  Student Id:{" "}
+                  Institue Id:{" "}
                   <span className="text-primary-teal">
                     {userData.instituteId}
                   </span>

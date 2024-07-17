@@ -32,6 +32,7 @@ function Login() {
         localStorage.setItem("name", data.user.name);
 
         if (data.user.role === "user") navigate("/my-profile");
+        if (data.user.role === "admin") navigate("/admin-dashboard");
         toast.success("Logged in successfully");
       }
 
