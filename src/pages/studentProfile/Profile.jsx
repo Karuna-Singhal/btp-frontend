@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import {
   ArrowLeftCircleIcon,
   ArrowRightEndOnRectangleIcon,
-  ArrowRightIcon,
 } from "@heroicons/react/24/solid";
 
 import LabTabs from "components/profileTab/Tab";
@@ -13,6 +12,7 @@ import QuizTab from "components/profileTab/QuizTab";
 import ExamTab from "components/profileTab/ExamTab";
 import AssignmentTab from "components/profileTab/AssignmentTab";
 import SubjectTab from "components/profileTab/SubjectTab";
+import AnalyticTab from "components/profileTab/AnalyticTab";
 
 function Profile() {
   const { instituteId } = useParams();
@@ -63,6 +63,7 @@ function Profile() {
         {value === "exams" && <ExamTab />}
         {value === "assignment" && <AssignmentTab />}
         {value === "subjects" && <SubjectTab />}
+        {value === "analytics" && <AnalyticTab />}
       </div>
     </div>
   );

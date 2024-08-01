@@ -24,6 +24,7 @@ export default function TabsWrappedLabel({ value, onChange }) {
         <Tab value="exams" label="Exam" />
         <Tab value="assignment" label="Assignment" />
         <Tab value="subjects" label="Subject" />
+        <Tab value="analytics" label="Analytics" />
       </Tabs>
     </Box>
   );
