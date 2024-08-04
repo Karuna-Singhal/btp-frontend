@@ -10,8 +10,8 @@ function AnalyticTab() {
     assignment: 0,
     quiz: 0,
     exam: 0,
-    grade: "A",
-    gradePercentage: 90,
+    grade: "",
+    gradePercentage: 0,
   });
   const [aigenerativeData, setAigenerativeData] = useState({
     attendance: "",
@@ -21,8 +21,6 @@ function AnalyticTab() {
     message: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log(analyticsData, aigenerativeData);
 
   const getColor = (grade) => {
     if (grade === "A") return "#20c997";
@@ -56,8 +54,8 @@ function AnalyticTab() {
           assignment: data.precentageData.assignmentPercentage,
           quiz: data.precentageData.quizPercentage,
           exam: data.precentageData.examPercentage,
-          grade: "A",
-          gradePercentage: 90,
+          grade: data.precentageData.grade,
+          gradePercentage: data.precentageData.gradePercentage,
         });
         setAigenerativeData(data.insightData);
       }
